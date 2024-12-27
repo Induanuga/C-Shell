@@ -1,4 +1,4 @@
-I made a makefile, and it should be runned as ```make``` followed by ```./a.out```
+I created a Makefile, and it should be executed by running make followed by ./a.out
 <br>
 I took the maximum input size as 5000 and declared it as SIZ (macro)
 
