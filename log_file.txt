@@ -1,0 +1,15 @@
+sleep 30 &
+sleep 30 &
+sleep 30 &
+activities
+sleep 30 &
+activities
+sleep 30 &
+hop
+hop ..
+hop ~
+hop .. > z.txt
+proclore
+activities
+hop .. | wc
+| wc

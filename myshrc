@@ -1,0 +1,22 @@
+alias reveall="reveal -l"
+alias home="hop ~"
+
+mk_hop() {
+    if [ -z "$1" ]; then
+        echo "Usage: mk_hop <directory>"
+        return 1
+    fi
+    mkdir -p "$1"
+    hop "$1"
+}
+
+hop_seek() {
+    local search="$1"
+    local dirPath
+    dirPath=$(seek -d -e "$search" | head -n 1)
+    if [ -n "$dirPath" ]; then
+        hop "$dirPath"
+    else
+        echo "Directory not found!"
+    fi
+}
