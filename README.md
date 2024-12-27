@@ -1,75 +1,121 @@
-I created a Makefile, and it should be executed by running make followed by ./a.out
-<br>
-I took the maximum input size as 5000 and declared it as SIZ (macro)
+## README
 
-# Spec-3
+### Makefile Execution
+- I created a Makefile, and it should be executed by running:
+  ```bash
+  make
+  ./a.out
+  ```
+- I took the maximum input size as 5000 and declared it as `SIZ` (macro):
+  ```c
+  #define SIZ 5000
+  ```
 
-- If first command is ```hop t1 -``` the previous directory is defined as path to t1
+### Specifications
 
-# Spec-4
+#### Spec-3
+- If the first command is:
+  ```bash
+  hop t1 -
+  ```
+  The previous directory is defined as the path to `t1`.
 
-- If reveal - is performed but there are no previous directories then it prints error like this ```opendir: No such file or directory```.
+#### Spec-4
+- If `reveal -` is performed but there are no previous directories, it prints an error like this:
+  ```bash
+  opendir: No such file or directory
+  ```
+- The number of files (all executables, files, and folders) a directory can have is:
+  ```c
+  #define MAX_FILES 1024
+  ```
+- If the `-l` flag is present in the input command, the color coding reflects only on the file or directory name.
 
-- No.of files(all executables,files,folder) a directory can have=1024.
+#### Spec-5
+- Erroneous commands are also stored.
+- A file called `log_file.txt` is created in the home directory (where the shell is invoked) and all the commands are stored in it:
+  ```c
+  FILE *log_file = fopen("log_file.txt", "a");
+  if (log_file != NULL) {
+      fprintf(log_file, "%s\n", command);
+      fclose(log_file);
+  }
+  ```
 
-- If -l flag is present in the input command the colour coding reflects only on the file or directory name.
+#### Spec-6
+- If there are multiple `sleep` commands like:
+  ```bash
+  sleep 3; sleep 5
+  ```
+  They are displayed as:
+  ```
+  <JohnDoe@SYS:~ sleep : 3 sleep 5: 8s>
+  ```
+- Background processes are not handled for the implemented commands like `hop`, `reveal`, etc.
 
-# Spec-5
+#### Spec-7
+- Virtual memory is measured in kilobytes.
 
-- I have stored the erroneous commands as well.
+#### Spec-10
+- If a command’s output is redirected to `newfile.txt` but the command results in an error, the error is printed in `newfile.txt`. For example:
+  ```bash
+  hop -
+  ```
+  Results in:
+  ```
+  OLDPWD not set
+  ```
+  Being written to `newfile.txt`.
+- Cases like:
+  ```bash
+  echo i>newfile.txt text
+  ```
+  Are not handled.
+- When a command like:
+  ```bash
+  reveal -la > a.txt
+  ```
+  Is executed, the ANSI color codes used will appear in the output file.
 
-- I have created a file called "log_file.txt" in the home directory (where shell is invoked) and stored all the commands in that.
-
-# Spec-6
-
-- If there are multiple sleep commands like : ```sleep 3; sleep 5``` then I did that as ```<JohnDoe@SYS:~ sleep : 3 sleep 5: 8s>```
-
-- Did not handle background processes for the commands i have implemented like hop, reveal etc..
-
-# Spec-7
-
-- Virtual memory - in kilobytes
-
-
-# Spec-10
-
-- If we have some command whose output is directed into newfile.txt but the command ends up erroring, the error is printed newfile.txt?
-For example:
-If first command executed is : ```hop -```
-then the error ```OLDPWD not set``` is printed in the newfile.txt
-
-- Did not handle cases like this : ```echo i>newfile.txt text```
-
-- When I run a command like ```reveal -la > a.txt```, the ANSI colour codes I used will be in the output file.
-
-# Spec-11
-
-- ```hop ..|wc``` when command like this is executed, it will not hop to the parent directory.
-- ```hop .. > a.txt``` when command like this is executed, it will hop to the parent directory as well.
-
-- Invalid use of pipes is reported as : ```Invalid use of pipe```
-
+#### Spec-11
+- When a command like:
+  ```bash
+  hop ..|wc
+  ```
+  Is executed, it will not hop to the parent directory.
+- However:
+  ```bash
+  hop .. > a.txt
+  ```
+  Will hop to the parent directory.
+- Invalid use of pipes is reported as:
+  ```
+  Invalid use of pipe
+  ```
 - The commands in a pipeline are run sequentially.
 
+#### Spec-12
+- Backgrounding for pipes does not work.
+- Commands like:
+  ```bash
+  echo "Hi" & > a.txt
+  ```
+  Are not valid in this shell.
 
-# Spec-12
+#### Spec-14
+- Sometimes, you may need to press `Ctrl+D` 2 or 3 times if the shell does not log out immediately (kills all processes and logs out of the shell).
 
-- Backgrounding for pipes will won't work.
+#### Spec-15
+- When a background command is brought to the foreground, if its execution takes more than 2 seconds (e.g., `sleep 20` running in the background is brought to the foreground using `fg`), the prompt will display:
+  ```
+  sleep : [ts]
+  ```
+- If `sleep x` is running and `Ctrl+D` is encountered, the shell logs out after the execution of `sleep x`.
 
-- Commands like ```echo "Hi" & > a.txt``` are not valid in my shell.
+#### Spec-16
+- If the `-n` flag is not used, the shell prints the usage:
+  ```
+  Usage: neonate -n [time_arg]\n
+  ```
+- The case where `n=0` is not handled.
 
-# Spec-14
-
-- Sometimes, we need to press ctrl+d 2,3 times if it not logged out of shell immediately.(kills all the processes and logs out of the shell)
-
-# Spec-15
-
-- Here we are going to run a bg command in foreground so if its execution took more than 2 second. For Example sleep 20 was running in bg now i used fg to put in fg so in prompt it shows sleep : [ts]
-
--  If sleep x is currently running if ctrl d is encountered then it logs out of shell after execution of sleep x.
-
-# Spec-16
-
-- If -n flag is not used, it prints the usage saying "Usage: neonate -n [time_arg]\n"
-
-- The case where n=0 is not handled.
