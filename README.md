@@ -1,4 +1,158 @@
-## README
+# C-Shell
+
+A custom Unix-like shell implemented in C, supporting command execution, process management, directory navigation, logging, piping, redirection, and several built-in utilities.
+
+---
+
+## Overview
+
+**C-Shell** is a feature-rich shell designed to mimic and extend the behavior of standard Unix shells. It supports both built-in and external commands, advanced process management (foreground/background), command history, colored directory listings, piping, redirection, and custom utilities like `hop`, `reveal`, `seek`, `proclore`, `log`, and more.
+
+---
+
+## Features and Functionalities
+
+- **Command Execution**: Run both built-in and external commands.
+- **Foreground/Background Processes**: Launch and manage jobs in the foreground or background.
+- **Process Management**: Bring jobs to foreground/background, kill jobs, and view running/stopped jobs.
+- **Directory Navigation**: Use `hop` to change directories, including shortcuts for home and previous directories.
+- **Colored Directory Listing**: Use `reveal` for `ls`-like listings with color coding and detailed info.
+- **File/Directory Search**: Use `seek` to search for files/directories recursively with flexible flags.
+- **Command Logging**: All commands (including erroneous ones) are logged to `log_file.txt` in the home directory.
+- **Command History**: View, purge, or execute previous commands using the `log` command.
+- **Piping and Redirection**: Support for `|`, `<`, `>`, and `>>` operators.
+- **Signal Handling**: Handles `Ctrl+C` (SIGINT), `Ctrl+Z` (SIGTSTP), and child process signals.
+- **Custom Utilities**:
+  - `proclore`: View process details.
+  - `neonate`: Monitor the most recently created process.
+  - `iMan`: Fetch online man pages.
+  - `activities`: List all jobs started by the shell.
+  - `ping`: Send signals to processes.
+- **Alias and Custom Functions**: Support for aliases and shell functions via `myshrc`.
+- **ANSI Color Support**: Colorful prompts and outputs for better readability.
+
+---
+
+## Available Commands
+
+### Built-in Commands
+
+- `hop [dir] ...`  
+  Change directory. Supports `~`, `-`, relative, and absolute paths.
+- `reveal [-a] [-l] [path]`  
+  List directory contents with color and optional details.
+- `seek [-d] [-f] [-e] <name> [dir]`  
+  Search for files/directories recursively.
+- `proclore [pid]`  
+  Show process info for the shell or a given PID.
+- `log [purge|execute <index>]`  
+  Show, purge, or execute from command history.
+- `activities`  
+  List all jobs started by the shell.
+- `fg <pid>`  
+  Bring a background job to the foreground.
+- `bg <pid>`  
+  Resume a stopped job in the background.
+- `neonate -n <seconds>`  
+  Monitor the most recently created process.
+- `ping <pid> <signal>`  
+  Send a signal to a process.
+- `iMan <command>`  
+  Fetch and display the online man page for a command.
+
+### External Commands
+
+- Any valid system command (e.g., `ls`, `cat`, `sleep`, etc.) can be executed.
+
+### Operators
+
+- `;` — Command separator.
+- `|` — Pipe output of one command to another.
+- `<`, `>`, `>>` — Input/output redirection.
+
+---
+
+## Usage
+
+### Compilation
+
+```bash
+make
+./a.out
+```
+
+### Prompt
+
+The shell prompt displays as:
+
+```
+<username@system:~>
+```
+
+### Example Commands
+
+```bash
+hop ~/Documents
+reveal -la
+seek -f -e main.c ~
+log
+log execute 2
+sleep 5 &
+activities
+fg 12345
+bg 12345
+proclore
+proclore 12345
+neonate -n 2
+iMan ls
+```
+
+### Redirection and Piping
+
+```bash
+reveal -l > files.txt
+cat files.txt | grep main
+hop .. | wc
+```
+
+---
+
+## Configuration
+
+### Aliases and Functions
+
+You can define aliases and shell functions in the `myshrc` file:
+
+```sh
+alias reveall="reveal -l"
+alias home="hop ~"
+
+mk_hop() {
+    if [ -z "$1" ]; then
+        echo "Usage: mk_hop <directory>"
+        return 1
+    fi
+    mkdir -p "$1"
+    hop "$1"
+}
+```
+
+---
+
+## Notes and Limitations
+
+- The maximum input size is `5000` characters (`#define SIZ 5000`).
+- Directory listing supports up to 1024 files per directory.
+- Backgrounding for pipes is not supported.
+- Some advanced shell features (like `echo i>file text`) are not handled.
+- ANSI color codes will appear in redirected output files.
+- Sometimes, you may need to press `Ctrl+D` multiple times to exit the shell.
+- When a background command is brought to the foreground and runs for more than 2 seconds, the prompt will display the command and its duration.
+- All commands, including errors, are logged in `log_file.txt` in the home directory.
+
+---
+
+## Existing README Content
 
 ### Makefile Execution
 - I created a Makefile, and it should be executed by running:
@@ -119,3 +273,4 @@
   ```
 - The case where `n=0` is not handled.
 
+---
